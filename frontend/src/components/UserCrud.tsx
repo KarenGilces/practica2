@@ -20,7 +20,6 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
-  IconPlus,
   IconPencil,
   IconTrash,
   IconUserPlus,
@@ -38,8 +37,8 @@ export interface User {
   createdAt: string;
 }
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-const API_URL = BASE_URL.endsWith('/api/users') ? BASE_URL : `${BASE_URL.replace(/\/$/, '')}/api/users`;
+const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
+const API_URL = BASE_URL.endsWith('/api/users')? BASE_URL : `${BASE_URL.replace(/\/$/, '')}/api/users`;
 
 export const UserCrud: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -97,7 +96,7 @@ export const UserCrud: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim()) {
+    if (!formData.name.trim() ||!formData.email.trim()) {
       notifications.show({
         title: 'Error de validación',
         message: 'El nombre y correo electrónico son requeridos',
@@ -108,8 +107,8 @@ export const UserCrud: React.FC = () => {
 
     setFormSubmitting(true);
     try {
-      const url = editingUser ? `${API_URL}/${editingUser.id}` : API_URL;
-      const method = editingUser ? 'PUT' : 'POST';
+      const url = editingUser? `${API_URL}/${editingUser.id}` : API_URL;
+      const method = editingUser? 'PUT' : 'POST';
 
       const res = await fetch(url, {
         method,
@@ -124,9 +123,9 @@ export const UserCrud: React.FC = () => {
       }
 
       notifications.show({
-        title: editingUser ? 'Usuario actualizado' : 'Usuario creado',
+        title: editingUser? 'Usuario actualizado' : 'Usuario creado',
         message: editingUser
-          ? `El usuario ${resData.name} ha sido actualizado correctamente.`
+         ? `El usuario ${resData.name} ha sido actualizado correctamente.`
           : `El usuario ${resData.name} ha sido registrado.`,
         color: 'green',
         icon: <IconCheck size={16} />,
@@ -189,16 +188,15 @@ export const UserCrud: React.FC = () => {
 
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .substring(0, 2)
-      .toUpperCase();
+     .split(' ')
+     .map((n) => n[0])
+     .join('')
+     .substring(0, 2)
+     .toUpperCase();
   };
 
   return (
     <Stack gap="lg">
-      {/* Target header / toolbar */}
       <Paper p="xl" className="glass-card">
         <Flex justify="space-between" align="center" wrap="wrap" gap="md">
           <Group>
@@ -234,21 +232,19 @@ export const UserCrud: React.FC = () => {
         </Flex>
       </Paper>
 
-      {/* Alerta de Error */}
       {error && (
         <Alert icon={<IconAlertCircle size={16} />} title="Error de conexión" color="red" radius="md">
           {error}
         </Alert>
       )}
 
-      {/* Tabla de Usuarios */}
       <Paper p="md" className="glass-card">
-        {loading ? (
+        {loading? (
           <Flex justify="center" align="center" p="xl" direction="column" gap="sm">
             <Loader color="indigo" type="dots" />
             <Text size="sm" c="dimmed">Cargando usuarios desde PostgreSQL...</Text>
           </Flex>
-        ) : users.length === 0 ? (
+        ) : users.length === 0? (
           <Flex justify="center" align="center" p="xl" direction="column" gap="xs">
             <IconUsers size={48} color="#64748b" />
             <Text fw={500} size="lg" c="dimmed">No hay usuarios registrados</Text>
@@ -328,13 +324,12 @@ export const UserCrud: React.FC = () => {
         )}
       </Paper>
 
-      {/* Modal para Crear / Editar Usuario */}
       <Modal
         opened={modalOpen}
         onClose={() => setModalOpen(false)}
         title={
           <Text fw={700} size="lg" style={{ color: '#f8fafc' }}>
-            {editingUser ? 'Editar Usuario' : 'Nuevo Usuario'}
+            {editingUser? 'Editar Usuario' : 'Nuevo Usuario'}
           </Text>
         }
         centered
@@ -350,7 +345,7 @@ export const UserCrud: React.FC = () => {
               placeholder="Ej: María García"
               required
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) => setFormData({...formData, name: e.target.value })}
             />
             <TextInput
               label="Correo Electrónico"
@@ -358,7 +353,7 @@ export const UserCrud: React.FC = () => {
               type="email"
               required
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) => setFormData({...formData, email: e.target.value })}
             />
             <Select
               label="Rol"
@@ -368,21 +363,20 @@ export const UserCrud: React.FC = () => {
                 { value: 'admin', label: 'Administrador' },
               ]}
               value={formData.role}
-              onChange={(val) => setFormData({ ...formData, role: val || 'user' })}
+              onChange={(val) => setFormData({...formData, role: val || 'user' })}
             />
             <Group justify="flex-end" mt="md">
               <Button variant="default" onClick={() => setModalOpen(false)}>
                 Cancelar
               </Button>
               <Button type="submit" color="indigo" loading={formSubmitting}>
-                {editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
+                {editingUser? 'Guardar Cambios' : 'Crear Usuario'}
               </Button>
             </Group>
           </Stack>
         </form>
       </Modal>
 
-      {/* Modal Confirmar Eliminación */}
       <Modal
         opened={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
@@ -403,7 +397,7 @@ export const UserCrud: React.FC = () => {
             <Text span fw={700} c="indigo">
               {userToDelete?.name}
             </Text>
-            ? Esta acción no se puede deshacer.
+           ? Esta acción no se puede deshacer.
           </Text>
           <Group justify="flex-end">
             <Button variant="default" onClick={() => setDeleteModalOpen(false)}>
