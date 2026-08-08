@@ -1,0 +1,9 @@
+name: CI Proyects FULL STACKs
+on:
+  push:
+    branches: 
+      - main
+      - "feat/**"
+  pull:
+    branches:
+      - main
