@@ -68,6 +68,8 @@ jobs:
         working-directory: ./frontend
         run: npm run build --if-present
 
+
+
   validar-docker:
     name: Validar Docker
     runs-on: ubuntu-latest
