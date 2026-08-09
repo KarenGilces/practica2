@@ -27,7 +27,12 @@ jobs:
         run: npm ci
       - name: Generar cliente Prisma
         working-directory: ./backend
-        run: npx prisma generate --if-present
+        run: |
+          if [ -f "prisma/schema.prisma" ]; then
+            npx prisma generate
+          else
+            echo "No hay schema.prisma, se omite"
+          fi
       - name: Ejecutar pruebas Backend
         working-directory: ./backend
         run: npm test --if-present
