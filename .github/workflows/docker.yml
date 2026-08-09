@@ -1,4 +1,4 @@
-name: CI Proyecto Full Stack
+name: CI Proyecto Full Stack - Docker
 
 on:
   push:
@@ -10,19 +10,13 @@ on:
       - main
 
 jobs:
-
   validar-docker:
     name: Validar Docker
     runs-on: ubuntu-latest
-    needs:
-      - validar-backend
-      - validar-frontend
     steps:
       - name: Obtener código
         uses: actions/checkout@v4
-
       - name: Validar Docker Compose
         run: docker compose config
-
       - name: Construir imágenes Docker
         run: docker compose build

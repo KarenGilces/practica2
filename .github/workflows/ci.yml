@@ -27,7 +27,7 @@ jobs:
         run: npm ci
       - name: Generar cliente Prisma
         working-directory: ./backend
-        run: npx prisma generate
+        run: npx prisma generate --if-present
       - name: Ejecutar pruebas Backend
         working-directory: ./backend
         run: npm test --if-present
