@@ -3,48 +3,48 @@ name: CI Proyecto Full Stack
 on:
   push:
     branches:
-            - main
-            - "feat/**"
+      - main
+      - "feat/**"
   pull_request:
     branches:
-            - main
+      - main
 
 jobs:
   validar-backend:
     name: Validar Backend
     runs-on: ubuntu-latest
     steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-            - run: npm install
+      - run: npm install
         working-directory: ./backend
-            - run: npm test
+      - run: npm test
         working-directory: ./backend
 
   validar-frontend:
     name: Validar Frontend
     runs-on: ubuntu-latest
     steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-            - run: npm install
+      - run: npm install
         working-directory: ./frontend
-            - run: npm run build
+      - run: npm run build
         working-directory: ./frontend
 
   validar-docker:
     name: Validar Docker
     runs-on: ubuntu-latest
     needs:
-            - validar-backend
-            - validar-frontend
+      - validar-backend
+      - validar-frontend
     steps:
-            - uses: actions/checkout@v4
-            - name: Construir imagen backend
+      - uses: actions/checkout@v4
+      - name: Construir imagen backend
         run: docker build ./backend -t practica2-backend:v1
-            - name: Construir imagen frontend
+      - name: Construir imagen frontend
         run: docker build ./frontend -t practica2-frontend:v1
