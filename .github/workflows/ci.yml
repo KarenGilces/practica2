@@ -63,12 +63,12 @@ jobs:
         run: npm ci
 
       - name: Ejecutar pruebas Frontend
+        run: npm test 
         working-directory: ./frontend
-        run: npm test --if-present
         
       - name: Verificar calidad Frontend
         working-directory: ./frontend
-        run: npm run lint --if-present
+        run: npm run lint 
 
       - name: Construir Frontend
         working-directory: ./frontend
