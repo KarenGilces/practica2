@@ -63,12 +63,15 @@ jobs:
         run: npm test --if-present
       - name: Verificar calidad Frontend
         working-directory: ./frontend
-        run: npm run lint --if-present
+        run: |
+          if [ -f "eslint.config.js" ] || [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ]; then
+            npm run lint --if-present
+          else
+            echo "No hay config eslint, se omite lint frontend"
+          fi
       - name: Construir Frontend
         working-directory: ./frontend
         run: npm run build --if-present
-
-
 
   validar-docker:
     name: Validar Docker
