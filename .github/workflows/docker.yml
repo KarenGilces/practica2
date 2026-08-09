@@ -10,6 +10,7 @@ on:
       - main
 
 jobs:
+
   validar-docker:
     name: Validar Docker
     runs-on: ubuntu-latest
@@ -17,8 +18,11 @@ jobs:
       - validar-backend
       - validar-frontend
     steps:
-      - uses: actions/checkout@v4
-      - name: Construir imagen backend
-        run: docker build ./backend -t practica2-backend:v1
-      - name: Construir imagen frontend
-        run: docker build ./frontend -t practica2-frontend:v1
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Validar Docker Compose
+        run: docker compose config
+
+      - name: Construir imágenes Docker
+        run: docker compose build

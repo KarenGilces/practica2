@@ -14,27 +14,65 @@ jobs:
     name: Validar Backend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: npm install
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Instalar dependencias Backend
         working-directory: ./backend
-      - run: npm test
+        run: npm ci
+
+      - name: Generar cliente Prisma
         working-directory: ./backend
+        run: npx prisma generate
+
+      - name: Ejecutar pruebas Backend
+        working-directory: ./backend
+        run: npm test --if-present
+
+      - name: Verificar calidad Backend
+        working-directory: ./backend
+        run: npm run lint --if-present
+
+      - name: Construir Backend
+        working-directory: ./backend
+        run: npm run build --if-present
 
   validar-frontend:
     name: Validar Frontend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: npm install
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias Frontend
         working-directory: ./frontend
-      - run: npm run build
+        run: npm ci
+
+      - name: Ejecutar pruebas Frontend
+        run: npm test 
         working-directory: ./frontend
+        
+      - name: Verificar calidad Frontend
+        working-directory: ./frontend
+        run: npm run lint 
+
+      - name: Construir Frontend
+        working-directory: ./frontend
+        run: npm run build --if-present
 
   validar-docker:
     name: Validar Docker
@@ -43,8 +81,11 @@ jobs:
       - validar-backend
       - validar-frontend
     steps:
-      - uses: actions/checkout@v4
-      - name: Construir imagen backend
-        run: docker build ./backend -t practica2-backend:v1
-      - name: Construir imagen frontend
-        run: docker build ./frontend -t practica2-frontend:v1
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Validar Docker Compose
+        run: docker compose config
+
+      - name: Construir imágenes Docker
+        run: docker compose build
