@@ -12,6 +12,12 @@ app.register(cors, {
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 });
 
+app.get('/health', async () => {
+  return {
+    message: 'Servidor Backend Fastify activo',
+    version: process.env.API_VERSION ?? 'v1',
+  };
+});
 // Ruta raíz de verificación
 app.get('/', async () => {
   return { status: 'OK', message: 'Servidor Backend Fastify activo' };
