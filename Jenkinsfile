@@ -1,0 +1,16 @@
+pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Identificacion'){
+      steps {
+        sh 'git rev-parse --short HEAD'
+        sh 'git status --short'
+      }
+    }
+  }
+}
