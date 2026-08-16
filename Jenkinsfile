@@ -57,13 +57,13 @@ pipeline {
             }
         }
 
-        stage('Frontend - Install') {
-            steps {
-                dir('frontend') {
-                    sh 'npm ci'
-                }
-            }
-        }
+       stage('Frontend - Install') {
+  steps {
+    dir('frontend') {
+      sh 'npm ci --legacy-peer-deps'
+    }
+  }
+}
 
         stage('Frontend - Lint') {
             steps {
