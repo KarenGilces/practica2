@@ -99,10 +99,10 @@ pipeline {
                 sh '''
                     set -eu
 
-                    echo "Verificando imágenes construidas..."
-
-                    docker image inspect "${LOCAL_BACKEND_IMAGE}:latest" > /dev/null
-                    docker image inspect "${LOCAL_FRONTEND_IMAGE}:latest" > /dev/null
+                     docker image inspect proyecto-3-backend:latest
+      docker image inspect proyecto-3-frontend:latest
+      docker image inspect practica2-backend:latest || true
+      docker image inspect practica2-frontend:latest || true
 
                     echo "Imágenes verificadas correctamente."
                 '''
