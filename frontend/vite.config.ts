@@ -1,41 +1,18 @@
-import react from '@vitejs/plugin-react'; 
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '0.0.0.0', // Permite conexiones desde fuera del contenedor Docker
+    host: true,
     port: 5173,
     strictPort: true,
-    allowedHosts: [
-      'proyecto-integrador-frontend-production.up.railway.app',
-      '.railway.app',
-      '.up.railway.app',
-      'localhost',
-      '127.0.0.1'
-    ],
+    allowedHosts: true, // <- permite todos los dominios de Railway, no hay que listar
   },
   preview: {
-    host: '0.0.0.0', // Necesario si usas 'vite preview' en el contenedor
+    host: true,
     port: 5173,
     strictPort: true,
-    allowedHosts: [
-      'proyecto-integrador-frontend-production.up.railway.app',
-      '.railway.app',
-      '.up.railway.app',
-      'localhost',
-      '127.0.0.1'
-    ],
+    allowedHosts: true, // <- lo mismo aquí
   },
-});
-
-function defineConfig(arg0: {
-  plugins: any[]; server: {
-    host: string; // Permite conexiones desde fuera del contenedor Docker
-    port: number; strictPort: boolean; allowedHosts: string[];
-  }; preview: {
-    host: string; // Necesario si usas 'vite preview' en el contenedor
-    port: number; strictPort: boolean; allowedHosts: string[];
-  };
-}) {
-  throw new Error("Function not implemented.");
-}
+})
