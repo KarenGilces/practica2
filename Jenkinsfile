@@ -1,3 +1,4 @@
+
 pipeline {
 
     agent any
@@ -58,12 +59,12 @@ pipeline {
         }
 
         stage('Frontend - Install') {
-            steps {
-                dir('frontend') {
-                    sh 'npm ci'
-                }
-            }
-        }
+  steps {
+    dir('frontend') {
+      sh 'npm ci --legacy-peer-deps'
+    }
+  }
+}
 
         stage('Frontend - Lint') {
             steps {
