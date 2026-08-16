@@ -1,3 +1,5 @@
+import react from '@vitejs/plugin-react'; 
+
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -25,3 +27,15 @@ export default defineConfig({
     ],
   },
 });
+
+function defineConfig(arg0: {
+  plugins: any[]; server: {
+    host: string; // Permite conexiones desde fuera del contenedor Docker
+    port: number; strictPort: boolean; allowedHosts: string[];
+  }; preview: {
+    host: string; // Necesario si usas 'vite preview' en el contenedor
+    port: number; strictPort: boolean; allowedHosts: string[];
+  };
+}) {
+  throw new Error("Function not implemented.");
+}
