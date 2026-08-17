@@ -11,7 +11,7 @@ services:
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  
+
   backend:
     image: proyecto-3-backend
     build:
@@ -27,7 +27,7 @@ services:
       - "3001:3000"
     depends_on:
       - db
-    
+
   frontend:
     image: proyecto-3-frontend
     build:
@@ -36,8 +36,8 @@ services:
     container_name: practica_frontend
     restart: unless-stopped
     environment:
-  VITE_API_URL: https://practica2-backend-production.up.railway.app
-  ports:
+      VITE_API_URL: https://practica2-backend-production.up.railway.app
+    ports:
       - "5173:5173"
     depends_on:
       - backend
