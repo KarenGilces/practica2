@@ -36,8 +36,8 @@ services:
     container_name: practica_frontend
     restart: unless-stopped
     environment:
-      VITE_API_URL: ${https://practica2-backend-production.up.railway.app}
-    ports:
+  VITE_API_URL: https://practica2-backend-production.up.railway.app
+  ports:
       - "5173:5173"
     depends_on:
       - backend
