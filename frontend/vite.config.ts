@@ -4,15 +4,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true,
+    host: '0.0.0.0',
     port: 5173,
-    strictPort: true,
-    allowedHosts: true, // <- permite todos los dominios de Railway, no hay que listar
+    allowedHosts: true
   },
   preview: {
-    host: true,
+    host: '0.0.0.0',
     port: 5173,
-    strictPort: true,
-    allowedHosts: true, // <- lo mismo aquí
-  },
+    allowedHosts: true
+  }
 })
