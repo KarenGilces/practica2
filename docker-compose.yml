@@ -13,6 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
   
   backend:
+    image: proyecto-3-backend
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -28,13 +29,14 @@ services:
       - db
     
   frontend:
+    image: proyecto-3-frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: practica_frontend
     restart: unless-stopped
     environment:
-      VITE_API_URL: http://localhost:3001
+      VITE_API_URL: ${https://practica2-backend-production.up.railway.app}
     ports:
       - "5173:5173"
     depends_on:
