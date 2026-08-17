@@ -17,7 +17,7 @@ pipeline {
         RAILWAY_FRONTEND_SERVICE_ID = '4c049b51-26d5-4b82-bf0b-2534c80c888c'
     }
    
-}
+
     stages {
         stage('Checkout') { steps { checkout scm } }
         stage('Backend - Install') { steps { dir('backend') { sh 'npm ci' } } }
