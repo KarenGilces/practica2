@@ -11,19 +11,14 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    environment {
+    
+   environment {
     LOCAL_BACKEND_IMAGE  = 'proyecto-3-backend'
     LOCAL_FRONTEND_IMAGE = 'proyecto-3-frontend'
+    REMOTE_BACKEND_IMAGE  = 'practica2-backend'
+    REMOTE_FRONTEND_IMAGE = 'practica2-frontend'
 
-    REMOTE_BACKEND_IMAGE  = 'karen30/practica2-backend'
-    REMOTE_FRONTEND_IMAGE = 'karen30/practica2-frontend'
 
-
-    //     RAILWAY_PROJECT_ID = '6c759af0-9895-4a99-8b00-bf4642281129'
-    //     RAILWAY_ENVIRONMENT_ID = 'efdd7c0a-1fa7-4d3a-89d0-f7647e948c4c'
-    //     RAILWAY_BACKEND_SERVICE_ID = '5c52cc15-b575-488a-969e-c35bacee17c0'
-    //     RAILWAY_FRONTEND_SERVICE_ID = '4c049b51-26d5-4b82-bf0b-2534c80c888c'
-    // 
     }
 
     stages {
