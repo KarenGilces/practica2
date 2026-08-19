@@ -1,3 +1,5 @@
+
+
 pipeline {
 
     agent any
@@ -11,14 +13,12 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    
-   environment {
-    LOCAL_BACKEND_IMAGE  = 'proyecto-3-backend'
-    LOCAL_FRONTEND_IMAGE = 'proyecto-3-frontend'
-    REMOTE_BACKEND_IMAGE  = 'practica2-backend'
-    REMOTE_FRONTEND_IMAGE = 'practica2-frontend'
+    environment {
+        LOCAL_BACKEND_IMAGE = 'proyecto-3-backend'
+        LOCAL_FRONTEND_IMAGE = 'proyecto-3-frontend'
 
-
+        REMOTE_BACKEND_IMAGE = 'practica2-backend'
+        REMOTE_FRONTEND_IMAGE = 'practica2-frontend'
     }
 
     stages {
@@ -56,8 +56,7 @@ pipeline {
         stage('Frontend - Install') {
             steps {
                 dir('frontend') {
-                  sh 'npm ci --legacy-peer-deps'
-
+                    sh 'npm ci'
                 }
             }
         }
@@ -86,123 +85,48 @@ pipeline {
 
         stage('Docker - Build') {
             steps {
-                sh 'docker compose build --no-cache'
+                sh 'docker compose build'
             }
         }
 
         stage('Docker - Verify Images') {
             steps {
                 sh '''
-                    set -eu
-
-                    echo "Verificando imágenes construidas..."
-
-                    docker image inspect "${LOCAL_BACKEND_IMAGE}:latest" > /dev/null
-                    docker image inspect "${LOCAL_FRONTEND_IMAGE}:latest" > /dev/null
-
-                    echo "Imágenes verificadas correctamente."
+                    docker image inspect ${LOCAL_BACKEND_IMAGE} > /dev/null
+                    docker image inspect ${LOCAL_FRONTEND_IMAGE} > /dev/null
                 '''
             }
         }
 
         stage('Docker - Publish') {
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'practica3',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
+
+                withCredentials([usernamePassword(
+                    credentialsId: 'practica3',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
                     sh '''
-                        set -eu
+                        echo "$DOCKER_PASS" | docker login \
+                            -u "$DOCKER_USER" \
+                            --password-stdin
 
-                        echo "========================================"
-                        echo "PUBLICACIÓN EN DOCKER HUB"
-                        echo "========================================"
+                        docker tag \
+                            ${LOCAL_BACKEND_IMAGE}:latest \
+                            $DOCKER_USER/${REMOTE_BACKEND_IMAGE}:${BUILD_NUMBER}
 
-                        export DOCKER_CONFIG="$(mktemp -d)"
-                        trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+                        docker tag \
+                            ${LOCAL_FRONTEND_IMAGE}:latest \
+                            $DOCKER_USER/${REMOTE_FRONTEND_IMAGE}:${BUILD_NUMBER}
 
-                        echo "$DOCKER_PASS" | docker login                             -u "$DOCKER_USER"                             --password-stdin
+                        docker push \
+                            $DOCKER_USER/${REMOTE_BACKEND_IMAGE}:${BUILD_NUMBER}
 
-                        BACKEND_LATEST="${DOCKER_USER}/${REMOTE_BACKEND_IMAGE}:latest"
-                        BACKEND_BUILD="${DOCKER_USER}/${REMOTE_BACKEND_IMAGE}:${BUILD_NUMBER}"
-
-                        FRONTEND_LATEST="${DOCKER_USER}/${REMOTE_FRONTEND_IMAGE}:latest"
-                        FRONTEND_BUILD="${DOCKER_USER}/${REMOTE_FRONTEND_IMAGE}:${BUILD_NUMBER}"
-
-                        docker tag "${LOCAL_BACKEND_IMAGE}:latest" "$BACKEND_LATEST"
-                        docker tag "${LOCAL_BACKEND_IMAGE}:latest" "$BACKEND_BUILD"
-
-                        docker tag "${LOCAL_FRONTEND_IMAGE}:latest" "$FRONTEND_LATEST"
-                        docker tag "${LOCAL_FRONTEND_IMAGE}:latest" "$FRONTEND_BUILD"
-
-                        docker push "$BACKEND_LATEST"
-                        docker push "$BACKEND_BUILD"
-
-                        docker push "$FRONTEND_LATEST"
-                        docker push "$FRONTEND_BUILD"
+                        docker push \
+                            $DOCKER_USER/${REMOTE_FRONTEND_IMAGE}:${BUILD_NUMBER}
 
                         docker logout
-
-                        echo "Imágenes publicadas correctamente en Docker Hub."
-                    '''
-                }
-            }
-        }
-
-        stage('Railway - CLI Check') {
-            steps {
-                sh '''
-                    set -eu
-                    echo "Verificando Railway CLI..."
-                    npx -y @railway/cli --version
-                '''
-            }
-        }
-
-        stage('Railway - Redeploy Backend') {
-            steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'railway-token',
-                        variable: 'RAILWAY_TOKEN'
-                    )
-                ]) {
-                    sh '''
-                        set -eu
-
-                        echo "========================================"
-                        echo "REDEPLOY BACKEND EN RAILWAY"
-                        echo "========================================"
-
-                        npx -y @railway/cli redeploy                             --service "$RAILWAY_BACKEND_SERVICE_ID"                             --environment "$RAILWAY_ENVIRONMENT_ID"                             --yes
-
-                        echo "Redeploy del backend solicitado correctamente."
-                    '''
-                }
-            }
-        }
-
-        stage('Railway - Redeploy Frontend') {
-            steps {
-                withCredentials([
-                    string(
-                        credentialsId: 'railway-token',
-                        variable: 'RAILWAY_TOKEN'
-                    )
-                ]) {
-                    sh '''
-                        set -eu
-
-                        echo "========================================"
-                        echo "REDEPLOY FRONTEND EN RAILWAY"
-                        echo "========================================"
-
-                        npx -y @railway/cli redeploy                             --service "$RAILWAY_FRONTEND_SERVICE_ID"                             --environment "$RAILWAY_ENVIRONMENT_ID"                             --yes
-
-                        echo "Redeploy del frontend solicitado correctamente."
                     '''
                 }
             }
@@ -210,27 +134,18 @@ pipeline {
     }
 
     post {
+
         success {
-            echo '========================================'
-            echo 'PIPELINE SATISFACTORIO'
-            echo '========================================'
-            echo 'Backend probado correctamente'
-            echo 'Frontend validado y construido'
-            echo 'Imágenes Docker construidas'
-            echo 'Imágenes publicadas en Docker Hub'
-            echo 'Redeploy solicitado para Backend en Railway'
-            echo 'Redeploy solicitado para Frontend en Railway'
+            echo 'Pipeline satisfactorio'
+            echo 'Imágenes publicadas correctamente en Docker Hub'
         }
 
         failure {
-            echo '========================================'
-            echo 'PIPELINE FALLIDO'
-            echo '========================================'
-            echo 'Revisar la primera etapa fallida y su Console Output.'
+            echo 'Revisar la primera etapa fallida y sus logs'
         }
 
         always {
-            sh 'docker logout >/dev/null 2>&1 || true'
+            sh 'docker logout || true'
         }
     }
 }
