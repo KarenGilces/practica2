@@ -156,7 +156,7 @@ pipeline {
                 withCredentials([
                     string(
                         credentialsId: 'railway-token',
-                        variable: 'RAILWAY_TOKEN'
+                        variable: 'RAILWAY_API_TOKEN'
                     )
                 ]) {
                     sh '''
@@ -176,7 +176,7 @@ pipeline {
                 withCredentials([
                     string(
                         credentialsId: 'railway-token',
-                        variable: 'RAILWAY_TOKEN'
+                        variable: 'RAILWAY_API_TOKEN'
                     )
                 ]) {
                     sh '''
