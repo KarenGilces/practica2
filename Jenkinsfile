@@ -13,7 +13,7 @@ pipeline {
     }
 
     environment {
-         LOCAL_BACKEND_IMAGE = 'proyecto-3-backend'
+        LOCAL_BACKEND_IMAGE = 'proyecto-3-backend'
         LOCAL_FRONTEND_IMAGE = 'proyecto-3-frontend'
 
         REMOTE_BACKEND_IMAGE = 'practica2-backend'
@@ -60,7 +60,7 @@ pipeline {
         stage('Frontend - Install') {
             steps {
                 dir('frontend') {
-                    sh 'npm ci'
+                    sh 'npm ci --legacy-peer-deps'
                 }
             }
         }
@@ -97,12 +97,9 @@ pipeline {
             steps {
                 sh '''
                     set -eu
-
                     echo "Verificando imágenes construidas..."
-
                     docker image inspect "${LOCAL_BACKEND_IMAGE}:latest" > /dev/null
                     docker image inspect "${LOCAL_FRONTEND_IMAGE}:latest" > /dev/null
-
                     echo "Imágenes verificadas correctamente."
                 '''
             }
@@ -119,36 +116,25 @@ pipeline {
                 ]) {
                     sh '''
                         set -eu
-
                         echo "========================================"
                         echo "PUBLICACIÓN EN DOCKER HUB"
                         echo "========================================"
-
                         export DOCKER_CONFIG="$(mktemp -d)"
                         trap 'rm -rf "$DOCKER_CONFIG"' EXIT
-
-                        echo "$DOCKER_PASS" | docker login                             -u "$DOCKER_USER"                             --password-stdin
-
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         BACKEND_LATEST="${DOCKER_USER}/${REMOTE_BACKEND_IMAGE}:latest"
                         BACKEND_BUILD="${DOCKER_USER}/${REMOTE_BACKEND_IMAGE}:${BUILD_NUMBER}"
-
                         FRONTEND_LATEST="${DOCKER_USER}/${REMOTE_FRONTEND_IMAGE}:latest"
                         FRONTEND_BUILD="${DOCKER_USER}/${REMOTE_FRONTEND_IMAGE}:${BUILD_NUMBER}"
-
                         docker tag "${LOCAL_BACKEND_IMAGE}:latest" "$BACKEND_LATEST"
                         docker tag "${LOCAL_BACKEND_IMAGE}:latest" "$BACKEND_BUILD"
-
                         docker tag "${LOCAL_FRONTEND_IMAGE}:latest" "$FRONTEND_LATEST"
                         docker tag "${LOCAL_FRONTEND_IMAGE}:latest" "$FRONTEND_BUILD"
-
                         docker push "$BACKEND_LATEST"
                         docker push "$BACKEND_BUILD"
-
                         docker push "$FRONTEND_LATEST"
                         docker push "$FRONTEND_BUILD"
-
                         docker logout
-
                         echo "Imágenes publicadas correctamente en Docker Hub."
                     '''
                 }
@@ -175,13 +161,10 @@ pipeline {
                 ]) {
                     sh '''
                         set -eu
-
                         echo "========================================"
                         echo "REDEPLOY BACKEND EN RAILWAY"
                         echo "========================================"
-
-                        npx -y @railway/cli redeploy                             --service "$RAILWAY_BACKEND_SERVICE_ID"                             --environment "$RAILWAY_ENVIRONMENT_ID"                             --yes
-
+                        npx -y @railway/cli redeploy --service "$RAILWAY_BACKEND_SERVICE_ID" --environment "$RAILWAY_ENVIRONMENT_ID" --yes
                         echo "Redeploy del backend solicitado correctamente."
                     '''
                 }
@@ -198,13 +181,10 @@ pipeline {
                 ]) {
                     sh '''
                         set -eu
-
                         echo "========================================"
                         echo "REDEPLOY FRONTEND EN RAILWAY"
                         echo "========================================"
-
-                        npx -y @railway/cli redeploy                             --service "$RAILWAY_FRONTEND_SERVICE_ID"                             --environment "$RAILWAY_ENVIRONMENT_ID"                             --yes
-
+                        npx -y @railway/cli redeploy --service "$RAILWAY_FRONTEND_SERVICE_ID" --environment "$RAILWAY_ENVIRONMENT_ID" --yes
                         echo "Redeploy del frontend solicitado correctamente."
                     '''
                 }
@@ -217,21 +197,13 @@ pipeline {
             echo '========================================'
             echo 'PIPELINE SATISFACTORIO'
             echo '========================================'
-            echo 'Backend probado correctamente'
-            echo 'Frontend validado y construido'
-            echo 'Imágenes Docker construidas'
-            echo 'Imágenes publicadas en Docker Hub'
-            echo 'Redeploy solicitado para Backend en Railway'
-            echo 'Redeploy solicitado para Frontend en Railway'
         }
-
         failure {
             echo '========================================'
             echo 'PIPELINE FALLIDO'
             echo '========================================'
             echo 'Revisar la primera etapa fallida y su Console Output.'
         }
-
         always {
             sh 'docker logout >/dev/null 2>&1 || true'
         }
