@@ -17,7 +17,7 @@ pipeline {
     }
     
     environment {
-         LOCAL_BACKEND_IMAGE = 'proyecto-3-backend'
+        LOCAL_BACKEND_IMAGE = 'proyecto-3-backend'
         LOCAL_FRONTEND_IMAGE = 'proyecto-3-frontend'
 
         REMOTE_BACKEND_IMAGE = 'practica2-backend'
