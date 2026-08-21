@@ -1,4 +1,5 @@
 # Practica 2 - DevOps - Jenkins
+echo # prueba pipeline funcionando >> README.md
 
 **Estudiante:** Karen Gilces  
 **Materia:** DevOps - ESPAM MFL - Tarea 3  
