@@ -11,7 +11,9 @@ pipeline {
         skipDefaultCheckout(true)
         disableConcurrentBuilds()
     }
-
+ triggers {
+        githubPush()
+    }
     environment {
         LOCAL_BACKEND_IMAGE = 'proyecto-3-backend'
         LOCAL_FRONTEND_IMAGE = 'proyecto-3-frontend'
