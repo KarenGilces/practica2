@@ -11,7 +11,7 @@ pipeline {
         skipDefaultCheckout(true)
         disableConcurrentBuilds()
     }
- triggers {
+    triggers {
         githubPush()
     }
     environment {
