@@ -14,10 +14,10 @@ jobs:
 
     defaults:
       run:
-        working-directory:./infra
+        working-directory: ./infra
 
     steps:
-      - name: Obtener código
+      - name: Obtener cï¿½digo
         uses: actions/checkout@v4
 
       - name: Instalar Terraform
@@ -29,5 +29,5 @@ jobs:
       - name: Inicializar proveedores
         run: terraform init -backend=false -input=false
 
-      - name: Validar configuración
+      - name: Validar configuraciï¿½n
         run: terraform validate
