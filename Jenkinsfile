@@ -148,7 +148,7 @@ EOF
 
         stage('Docker - Validate') {
             steps {
-                sh 'docker compose config --quiet'
+                sh 'docker compose config > /dev/null'
             }
         }
 
