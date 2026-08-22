@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 21,
+  "agentName": "LAPTOP-3LARFJMK",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus2.actions.githubusercontent.com/DvUOGr11DdKBDBeBG410QnA1UQhvmzgNrTqkEXlxQzcQrdqH82/",
+  "gitHubUrl": "https://github.com/KarenGilces/practica2",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}
